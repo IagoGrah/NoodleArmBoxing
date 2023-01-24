@@ -5,7 +5,7 @@ using Cinemachine;
 
 public class Player : MonoBehaviour
 {
-    public PlayerConfig Config;
+    public PlayerObject PlayerObject;
 
     [SerializeField] int maxHealth = 100;
 
@@ -28,9 +28,12 @@ public class Player : MonoBehaviour
     [SerializeField] int cameraShakeMinThreshold = 7;
     [SerializeField] float cameraShakeMultiplier = 0.02f;
 
-    public void Init(PlayerConfig config, HealthBar healthBar)
+    public void Init(PlayerObject playerObj, HealthBar healthBar)
     {
-        Config = config;
+        PlayerObject = playerObj;
+        PlayerObject.OnPlayerMove += OnMove;
+        PlayerObject.OnPlayerRotate += OnRotate;
+
         this.healthBar = healthBar;
     }
 
@@ -45,10 +48,10 @@ public class Player : MonoBehaviour
             healthBar.gameObject.SetActive(true);
         }
 
-        UpdateColor(Config.Color);
-        if (Config.HeadSprite != null)
+        UpdateColor(PlayerObject.Color);
+        if (PlayerObject.HeadSprite != null)
         {
-            headRenderer.sprite = Config.HeadSprite;
+            headRenderer.sprite = PlayerObject.HeadSprite;
         }
     }
 
@@ -106,15 +109,21 @@ public class Player : MonoBehaviour
         }
     }
 
-    #region Input
-    void OnMove(InputValue value)
+    private void OnDestroy()
     {
-        moveInput = value.Get<Vector2>();
+        PlayerObject.OnPlayerMove -= OnMove;
+        PlayerObject.OnPlayerRotate -= OnRotate;
     }
 
-    void OnRotate(InputValue value)
+    #region Input
+    void OnMove(Vector2 value)
     {
-        rotateInput = value.Get<float>();
+        moveInput = value;
+    }
+
+    void OnRotate(float value)
+    {
+        rotateInput = value;
     }
     #endregion
 }

@@ -2,23 +2,21 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
-using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    [SerializeField] GameObject startScreen;
+    [SerializeField] Player playerPrefab;
     [SerializeField] GameObject winScreen;
     [SerializeField] TMP_Text winText;
 
     [SerializeField] Transform[] spawnPoints;
     [SerializeField] HealthBar[] healthBars;
-    [SerializeField] PlayerConfig[] playerConfigs;
 
-    PlayerInputManager inputManager;
+    public string GameControlMap;
 
-    List<Player> players = new List<Player>();
+    List<Player> players = new();
 
     private void Awake()
     {
@@ -31,26 +29,22 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        inputManager = GetComponent<PlayerInputManager>();
     }
 
-    void OnPlayerJoined(PlayerInput player)
+    private void Start()
     {
-        var playerComponent = player.GetComponent<Player>();
-        playerComponent.Init(playerConfigs[player.playerIndex], healthBars[player.playerIndex]);
+        foreach (var player in PlayersManager.Instance.Players)
+        {
+            var playerComponent = Instantiate(playerPrefab);
+            playerComponent.Init(player, healthBars[player.PlayerIndex]);
 
-        var spawnPoint = spawnPoints[player.playerIndex];
-        player.transform.SetPositionAndRotation(spawnPoint.position, transform.rotation);
+            var spawnPoint = spawnPoints[player.PlayerIndex];
+            playerComponent.transform.SetPositionAndRotation(spawnPoint.position, transform.rotation);
 
-        //player.DeactivateInput();
-        players.Add(playerComponent);
-    }
+            player.PlayerInput.SwitchCurrentActionMap(GameControlMap);
 
-    void OnPlayerLeft(PlayerInput player)
-    {
-        var playerComponent = player.GetComponent<Player>();
-        players.Remove(playerComponent);
+            players.Add(playerComponent);
+        }
     }
 
     public void OnPlayerDeath(Player deadPlayer)
@@ -58,25 +52,15 @@ public class GameManager : MonoBehaviour
         players.Remove(deadPlayer);
         if (players.Count < 2)
         {
-            ShowWinScreen(players[0].Config);
+            ShowWinScreen(players[0].PlayerObject);
         }
     }
 
-    private void ShowWinScreen(PlayerConfig playerConfig)
+    private void ShowWinScreen(PlayerObject playerObject)
     {
         winScreen.SetActive(true);
-        winText.text = playerConfig.Name + " wins!";
-        winText.color = playerConfig.Color;
-    }
-
-    public void StartGame()
-    {
-        inputManager.DisableJoining();
-        foreach (var player in players)
-        {
-            player.GetComponent<PlayerInput>().ActivateInput();
-        }
-        startScreen.SetActive(false);
+        winText.text = playerObject.Name + " wins!";
+        winText.color = playerObject.Color;
     }
 
     public void ResetScene()
