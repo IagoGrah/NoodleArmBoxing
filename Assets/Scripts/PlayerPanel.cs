@@ -6,14 +6,23 @@ public class PlayerPanel : MonoBehaviour
 {
     [SerializeField] Image headImage;
     [SerializeField] TMP_Text nameText;
+    [SerializeField] TMP_InputField nameInput;
 
-    public PlayerObject PlayerObj;
+    [SerializeField] GameObject arrows;
+    [SerializeField] GameObject readyText;
+    [SerializeField] GameObject removeButton;
+
+    [HideInInspector] public PlayerObject PlayerObj;
+
+    public float readyHeadScaleFactor = 1.3f;
 
     private Sprite[] heads;
     private int currentHeadIndex = 0;
 
     private Color[] colors;
     private int currentColorIndex = 0;
+
+    private bool isReady;
 
     void Awake()
     {
@@ -23,8 +32,12 @@ public class PlayerPanel : MonoBehaviour
 
     private void Start()
     {
+        nameInput.text = PlayerObj.Name;
         nameText.text = PlayerObj.Name;
+
         PlayerObj.OnUINavigate += OnNavigate;
+        PlayerObj.OnUISubmit += OnSubmit;
+        PlayerObj.OnUICancel += OnCancel;
 
         currentHeadIndex = PlayerObj.HeadIndex;
         currentColorIndex = PlayerObj.ColorIndex;
@@ -71,6 +84,12 @@ public class PlayerPanel : MonoBehaviour
         UpdateChange();
     }
 
+    public void RemovePlayer()
+    {
+        Destroy(PlayerObj.gameObject);
+        Destroy(gameObject);
+    }
+
     private void UpdateChange()
     {
         PlayerObj.HeadIndex = currentHeadIndex;
@@ -82,23 +101,77 @@ public class PlayerPanel : MonoBehaviour
         headImage.sprite = PlayerObj.HeadSprite;
     }
 
+    public void UpdateName()
+    {
+        PlayerObj.Name = nameInput.text;
+        nameText.text = nameInput.text;
+    }
+
+    public void OnSelectNameInput()
+    {
+        var keyboardPlayer = PlayersManager.Instance.Players.Find(x => x.PlayerInput.currentControlScheme == "Keyboard&Mouse");
+        if (keyboardPlayer != null)
+        {
+            keyboardPlayer.PlayerInput.DeactivateInput();
+        }
+    }
+
+    public void OnDeselectNameInput()
+    {
+        var keyboardPlayer = PlayersManager.Instance.Players.Find(x => x.PlayerInput.currentControlScheme == "Keyboard&Mouse");
+        if (keyboardPlayer != null)
+        {
+            keyboardPlayer.PlayerInput.ActivateInput();
+        }
+    }
+
     private void OnNavigate(Vector2 value)
     {
-        if (value == Vector2.up)
+        if (!isReady)
         {
-            NextColor();
+            if (value == Vector2.up)
+            {
+                NextColor();
+            }
+            else if (value == Vector2.down)
+            {
+                PreviousColor();
+            }
+            else if (value == Vector2.right)
+            {
+                NextHead();
+            }
+            else if (value == Vector2.left)
+            {
+                PreviousHead();
+            }
         }
-        else if (value == Vector2.down)
+    }
+
+    private void SetReady(bool ready)
+    {
+        isReady = ready;
+        readyText.SetActive(ready);
+        arrows.SetActive(!ready);
+        headImage.rectTransform.localScale *= ready ? readyHeadScaleFactor : (1 / readyHeadScaleFactor);
+        nameInput.gameObject.SetActive(!ready);
+        nameText.gameObject.SetActive(ready);
+        removeButton.SetActive(!ready);
+    }
+
+    private void OnSubmit()
+    {
+        SetReady(true);
+    }
+    private void OnCancel()
+    {
+        if (isReady)
         {
-            PreviousColor();
+            SetReady(false);
         }
-        else if (value == Vector2.right)
+        else
         {
-            NextHead();
-        }
-        else if (value == Vector2.left)
-        {
-            PreviousHead();
+            RemovePlayer();
         }
     }
 }

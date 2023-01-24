@@ -23,7 +23,6 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this);
         }
         else
         {
@@ -39,7 +38,7 @@ public class GameManager : MonoBehaviour
             playerComponent.Init(player, healthBars[player.PlayerIndex]);
 
             var spawnPoint = spawnPoints[player.PlayerIndex];
-            playerComponent.transform.SetPositionAndRotation(spawnPoint.position, transform.rotation);
+            playerComponent.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 
             player.PlayerInput.SwitchCurrentActionMap(GameControlMap);
 
@@ -66,5 +65,10 @@ public class GameManager : MonoBehaviour
     public void ResetScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }

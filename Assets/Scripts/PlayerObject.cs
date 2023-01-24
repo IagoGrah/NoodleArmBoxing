@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,6 +17,10 @@ public class PlayerObject : MonoBehaviour
 
     public delegate void OnUINavigateEvent(Vector2 inputValue);
     public event OnUINavigateEvent OnUINavigate;
+
+    public delegate void EmptyDelegate();
+    public event EmptyDelegate OnUISubmit;
+    public event EmptyDelegate OnUICancel;
 
     public delegate void OnPlayerMoveEvent(Vector2 inputValue);
     public event OnPlayerMoveEvent OnPlayerMove;
@@ -38,6 +43,16 @@ public class PlayerObject : MonoBehaviour
     {
         var v2 = inputValue.Get<Vector2>();
         OnUINavigate?.Invoke(v2);
+    }
+
+    private void OnSubmit()
+    {
+        OnUISubmit?.Invoke();
+    }
+
+    private void OnCancel()
+    {
+        OnUICancel?.Invoke();
     }
 
     private void OnMove(InputValue value)

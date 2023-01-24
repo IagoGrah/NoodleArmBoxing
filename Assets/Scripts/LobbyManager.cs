@@ -12,6 +12,11 @@ public class LobbyManager : MonoBehaviour
 
     private void Awake()
     {
+        foreach (var player in PlayersManager.Instance.Players)
+        {
+            OnPlayerJoined(player.PlayerInput);
+        }
+
         PlayersManager.Instance.InputManager.onPlayerJoined += OnPlayerJoined;
         PlayersManager.Instance.InputManager.onPlayerLeft += OnPlayerLeft;
     }

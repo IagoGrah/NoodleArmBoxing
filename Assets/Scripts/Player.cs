@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
         PlayerObject.OnPlayerMove += OnMove;
         PlayerObject.OnPlayerRotate += OnRotate;
 
+        healthBar.SetName(playerObj.Name);
         this.healthBar = healthBar;
     }
 
