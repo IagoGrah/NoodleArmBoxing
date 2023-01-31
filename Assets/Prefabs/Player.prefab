@@ -164,7 +164,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &7718641199574318332
 HingeJoint2D:
@@ -383,7 +383,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &8572034470170783163
 HingeJoint2D:
@@ -447,6 +447,7 @@ GameObject:
   - component: {fileID: 7783166517753397172}
   - component: {fileID: 5502720177236738438}
   - component: {fileID: 1904523149497469435}
+  - component: {fileID: 8611546894947923618}
   m_Layer: 0
   m_Name: Head
   m_TagString: Head
@@ -558,6 +559,20 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.75
+--- !u!114 &8611546894947923618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4844519046952029576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d965c747a9cf2a843b3dad0cf86524d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: 0.05, y: -0.05, z: 0}
+  Material: {fileID: 2100000, guid: 7841154b7742170449653e4fd1931207, type: 2}
 --- !u!1 &4849133564146357447
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,7 +662,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &9171096250458319955
 HingeJoint2D:
@@ -752,7 +767,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &3894005240261702885
 HingeJoint2D:
@@ -857,7 +872,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &8926678850914368559
 HingeJoint2D:
@@ -962,7 +977,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &8926678850941548193
 HingeJoint2D:
@@ -1178,7 +1193,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &8926678851294837298
 HingeJoint2D:
@@ -1472,7 +1487,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &8926678852363016168
 HingeJoint2D:
