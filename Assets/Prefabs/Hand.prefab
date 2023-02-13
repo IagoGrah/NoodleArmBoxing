@@ -155,7 +155,7 @@ FixedJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: 1.630549}
+  m_ConnectedAnchor: {x: 0, y: -1.630549}
   m_DampingRatio: 0
   m_Frequency: 0
 --- !u!114 &5281225949900109928
@@ -171,4 +171,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Offset: {x: 0.05, y: -0.05, z: 0}
-  Material: {fileID: 2100000, guid: 7841154b7742170449653e4fd1931207, type: 2}
+  ShadowPrefab: {fileID: 2943294199943884169, guid: 9ef7c2e21f60da24482a50c6819af431, type: 3}
