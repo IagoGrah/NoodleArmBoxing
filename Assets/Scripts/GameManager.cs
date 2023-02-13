@@ -34,11 +34,10 @@ public class GameManager : MonoBehaviour
     {
         foreach (var player in PlayersManager.Instance.Players)
         {
-            var playerComponent = Instantiate(playerPrefab);
-            playerComponent.Init(player, healthBars[player.PlayerIndex]);
-
             var spawnPoint = spawnPoints[player.PlayerIndex];
-            playerComponent.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+
+            var playerComponent = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+            playerComponent.Init(player, healthBars[player.PlayerIndex]);
 
             player.PlayerInput.SwitchCurrentActionMap(GameControlMap);
 
