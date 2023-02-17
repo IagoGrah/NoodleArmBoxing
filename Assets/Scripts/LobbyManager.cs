@@ -9,6 +9,7 @@ public class LobbyManager : MonoBehaviour
     public string UIControlMap;
     [SerializeField] GameObject playButton;
     [SerializeField] GameObject joinPanel;
+    [SerializeField] GameObject playersRequiredText;
 
     public PlayerPanel PanelPrefab;
 
@@ -45,8 +46,12 @@ public class LobbyManager : MonoBehaviour
 
     private void UpdatePlayerCountUI()
     {
-        playButton.SetActive(PlayersManager.Instance.Players.Count > 1);
-        joinPanel.SetActive(PlayersManager.Instance.Players.Count < 4);
+        var enoughPlayers = PlayersManager.Instance.Players.Count > 1;
+        playButton.SetActive(enoughPlayers);
+        playersRequiredText.SetActive(!enoughPlayers);
+
+        var canJoinMore = PlayersManager.Instance.Players.Count < 4;
+        joinPanel.SetActive(canJoinMore);
         joinPanel.transform.SetAsLastSibling();
     }
 

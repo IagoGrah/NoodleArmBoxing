@@ -9,6 +9,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] int maxDamagePunchSound = 20;
     [SerializeField] float minVolumeFactor = 0.2f;
 
+    private float settingsMusicVolume = 1f;
+    private float settingsEffectsVolume = 1f;
+
     private AudioSource source;
 
     private void Awake()
@@ -30,6 +33,29 @@ public class AudioManager : MonoBehaviour
     {
         var sound = punchSounds[Random.Range(0, punchSounds.Length)];
         var volume = Mathf.Clamp(Mathf.InverseLerp(minDamagePunchSound, maxDamagePunchSound, Mathf.Max(dmg, minDamagePunchSound)), minVolumeFactor, 1f);
-        source.PlayOneShot(sound, volume);
+        source.PlayOneShot(sound, volume * settingsEffectsVolume);
+    }
+
+    public float GetMusicVolume()
+    {
+        return PlayerPrefs.GetFloat("musicVolume", 1f);
+    }
+
+    public float GetEffectsVolume()
+    {
+        return PlayerPrefs.GetFloat("effectsVolume", 1f);
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        volume = Mathf.Clamp01(volume);
+        settingsMusicVolume = volume;
+        PlayerPrefs.SetFloat("musicVolume", volume);
+    }
+    public void SetEffectsVolume(float volume)
+    {
+        volume = Mathf.Clamp01(volume);
+        settingsEffectsVolume = volume;
+        PlayerPrefs.SetFloat("effectsVolume", volume);
     }
 }
