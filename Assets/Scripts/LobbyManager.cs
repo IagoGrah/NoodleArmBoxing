@@ -7,15 +7,20 @@ public class LobbyManager : MonoBehaviour
     public Transform PlayerSlots;
     public string GameScene;
     public string UIControlMap;
+    [SerializeField] GameObject playButton;
+    [SerializeField] GameObject joinPanel;
 
     public PlayerPanel PanelPrefab;
 
     private void Awake()
     {
+        PlayersManager.Instance.InputManager.EnableJoining();
         foreach (var player in PlayersManager.Instance.Players)
         {
             OnPlayerJoined(player.PlayerInput);
         }
+
+        UpdatePlayerCountUI();
 
         PlayersManager.Instance.InputManager.onPlayerJoined += OnPlayerJoined;
         PlayersManager.Instance.InputManager.onPlayerLeft += OnPlayerLeft;
@@ -27,16 +32,22 @@ public class LobbyManager : MonoBehaviour
         player.SwitchCurrentActionMap(UIControlMap);
 
         var playerPanel = Instantiate(PanelPrefab, PlayerSlots);
+        playerPanel.transform.SetSiblingIndex(player.playerIndex);
         playerPanel.PlayerObj = playerObject;
+
+        UpdatePlayerCountUI();
     }
 
     private void OnPlayerLeft(PlayerInput player)
     {
-        //var playerPanel = player.GetComponent<PlayerPanel>();
-        //if (playerPanel != null)
-        //{
-        //    PlayerConfigs.Remove(playerPanel.config);
-        //}
+        UpdatePlayerCountUI();
+    }
+
+    private void UpdatePlayerCountUI()
+    {
+        playButton.SetActive(PlayersManager.Instance.Players.Count > 1);
+        joinPanel.SetActive(PlayersManager.Instance.Players.Count < 4);
+        joinPanel.transform.SetAsLastSibling();
     }
 
     public void StartGame()

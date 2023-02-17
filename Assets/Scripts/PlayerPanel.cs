@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class PlayerPanel : MonoBehaviour
@@ -23,6 +24,7 @@ public class PlayerPanel : MonoBehaviour
     private int currentColorIndex = 0;
 
     private bool isReady;
+    private bool isOnlyPlayer => PlayersManager.Instance.Players.Count < 2;
 
     void Awake()
     {
@@ -38,6 +40,11 @@ public class PlayerPanel : MonoBehaviour
         PlayerObj.OnUINavigate += OnNavigate;
         PlayerObj.OnUISubmit += OnSubmit;
         PlayerObj.OnUICancel += OnCancel;
+
+        PlayersManager.Instance.InputManager.onPlayerJoined += OnPlayerJoined;
+        PlayersManager.Instance.InputManager.onPlayerLeft += OnPlayerLeft;
+
+        UpdateRemoveButton();
 
         currentHeadIndex = PlayerObj.HeadIndex;
         currentColorIndex = PlayerObj.ColorIndex;
@@ -156,12 +163,30 @@ public class PlayerPanel : MonoBehaviour
         headImage.rectTransform.localScale *= ready ? readyHeadScaleFactor : (1 / readyHeadScaleFactor);
         nameInput.gameObject.SetActive(!ready);
         nameText.gameObject.SetActive(ready);
-        removeButton.SetActive(!ready);
+        UpdateRemoveButton();
+    }
+
+    private void OnPlayerJoined(PlayerInput player)
+    {
+        UpdateRemoveButton();
+    }
+
+    private void OnPlayerLeft(PlayerInput player)
+    {
+        UpdateRemoveButton();
+    }
+
+    private void UpdateRemoveButton()
+    {
+        removeButton.SetActive(!isReady && !isOnlyPlayer);
     }
 
     private void OnSubmit()
     {
-        SetReady(true);
+        if (!isReady)
+        {
+            SetReady(true);
+        }
     }
     private void OnCancel()
     {
@@ -169,9 +194,19 @@ public class PlayerPanel : MonoBehaviour
         {
             SetReady(false);
         }
-        else
+        else if (!isOnlyPlayer)
         {
             RemovePlayer();
         }
+    }
+
+    private void OnDestroy()
+    {
+        PlayerObj.OnUINavigate -= OnNavigate;
+        PlayerObj.OnUISubmit -= OnSubmit;
+        PlayerObj.OnUICancel -= OnCancel;
+
+        PlayersManager.Instance.InputManager.onPlayerJoined -= OnPlayerJoined;
+        PlayersManager.Instance.InputManager.onPlayerLeft -= OnPlayerLeft;
     }
 }

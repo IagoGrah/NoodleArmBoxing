@@ -44,4 +44,10 @@ public class PlayersManager : MonoBehaviour
             Players.Remove(playerObject);
         }
     }
+
+    private void OnDestroy()
+    {
+        InputManager.onPlayerJoined -= OnPlayerJoined;
+        InputManager.onPlayerLeft -= OnPlayerLeft;
+    }
 }

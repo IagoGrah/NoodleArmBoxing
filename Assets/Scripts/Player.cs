@@ -78,6 +78,8 @@ public class Player : MonoBehaviour
         {
             impulseSource.GenerateImpulseWithVelocity(collisionVelocity * cameraShakeMultiplier);
         }
+
+        AudioManager.Instance.PlayPunchSound(dmg);
         
         var popup = Instantiate(damagePopup, headRigidbody.transform.position, Quaternion.identity);
         popup.text = dmg.ToString();
