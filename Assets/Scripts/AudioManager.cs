@@ -9,10 +9,12 @@ public class AudioManager : MonoBehaviour
     [SerializeField] int maxDamagePunchSound = 20;
     [SerializeField] float minVolumeFactor = 0.2f;
 
-    private float settingsMusicVolume = 1f;
-    private float settingsEffectsVolume = 1f;
+    [SerializeField] AudioClip menuMusic;
+    [SerializeField] AudioClip fightMusic;
+    [SerializeField] AudioClip bellSound;
 
-    private AudioSource source;
+    [SerializeField] AudioSource musicSource;
+    [SerializeField] AudioSource effectsSource;
 
     private void Awake()
     {
@@ -26,14 +28,32 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        source = GetComponent<AudioSource>();
+        musicSource.volume = GetMusicVolume();
+        effectsSource.volume = GetEffectsVolume();
+    }
+
+    public void PlayMenuBGM()
+    {
+        musicSource.clip = menuMusic;
+        musicSource.Play();
+    }
+
+    public void PlayFightBGM()
+    {
+        musicSource.clip = fightMusic;
+        musicSource.Play();
     }
 
     public void PlayPunchSound(int dmg)
     {
         var sound = punchSounds[Random.Range(0, punchSounds.Length)];
         var volume = Mathf.Clamp(Mathf.InverseLerp(minDamagePunchSound, maxDamagePunchSound, Mathf.Max(dmg, minDamagePunchSound)), minVolumeFactor, 1f);
-        source.PlayOneShot(sound, volume * settingsEffectsVolume);
+        effectsSource.PlayOneShot(sound, volume);
+    }
+    
+    public void PlayBellSound()
+    {
+        effectsSource.PlayOneShot(bellSound);
     }
 
     public float GetMusicVolume()
@@ -49,13 +69,13 @@ public class AudioManager : MonoBehaviour
     public void SetMusicVolume(float volume)
     {
         volume = Mathf.Clamp01(volume);
-        settingsMusicVolume = volume;
+        musicSource.volume = volume;
         PlayerPrefs.SetFloat("musicVolume", volume);
     }
     public void SetEffectsVolume(float volume)
     {
         volume = Mathf.Clamp01(volume);
-        settingsEffectsVolume = volume;
+        effectsSource.volume = volume;
         PlayerPrefs.SetFloat("effectsVolume", volume);
     }
 }

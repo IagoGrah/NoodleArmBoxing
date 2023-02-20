@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
         players.Remove(deadPlayer);
         if (players.Count < 2)
         {
+            AudioManager.Instance.PlayBellSound();
             ShowWinScreen(players[0].PlayerObject);
         }
     }
@@ -68,6 +69,7 @@ public class GameManager : MonoBehaviour
 
     public void BackToMenu()
     {
+        AudioManager.Instance.PlayMenuBGM();
         SceneManager.LoadScene(0);
     }
 }

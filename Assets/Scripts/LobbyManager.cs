@@ -61,6 +61,7 @@ public class LobbyManager : MonoBehaviour
         PlayersManager.Instance.InputManager.onPlayerLeft -= OnPlayerLeft;
 
         PlayersManager.Instance.InputManager.DisableJoining();
+        AudioManager.Instance.PlayFightBGM();
         SceneManager.LoadScene(GameScene);
     }
 }

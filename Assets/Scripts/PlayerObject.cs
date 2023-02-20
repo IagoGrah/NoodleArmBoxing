@@ -34,9 +34,33 @@ public class PlayerObject : MonoBehaviour
 
         PlayerInput = GetComponent<PlayerInput>();
         PlayerIndex = PlayerInput.playerIndex;
-        Name = "Player " + (PlayerIndex + 1);
+        Name = GetNameFromIndex(PlayerIndex);
         ColorIndex = PlayerIndex;
         HeadIndex = PlayerIndex;
+    }
+
+    private string GetNameFromIndex(int playerIndex)
+    {
+        var number = string.Empty;
+        switch (playerIndex)
+        {
+            case 0:
+                number = "One";
+                break;
+
+            case 1: 
+                number = "Two";
+                break;
+
+            case 2:
+                number = "Three";
+                break;
+
+            case 3:
+                number = "Four";
+                break;
+        }
+        return ("Player " + number).Trim();
     }
 
     private void OnNavigate(InputValue inputValue)
