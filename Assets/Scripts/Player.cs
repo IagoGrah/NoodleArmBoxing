@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] float rotateSpeed = 0.3f;
 
     [SerializeField] TMP_Text damagePopup;
+    [SerializeField] ParticleSystem punchParticle;
 
     int health;
     HealthBar healthBar;
@@ -80,7 +81,8 @@ public class Player : MonoBehaviour
         }
 
         AudioManager.Instance.PlayPunchSound(dmg);
-        
+        var particles = Instantiate(punchParticle, headRigidbody.transform.position, Quaternion.LookRotation(collisionVelocity, Vector3.forward));
+
         var popup = Instantiate(damagePopup, headRigidbody.transform.position, Quaternion.identity);
         popup.text = dmg.ToString();
 

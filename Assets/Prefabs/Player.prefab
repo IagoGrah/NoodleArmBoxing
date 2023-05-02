@@ -1376,6 +1376,7 @@ MonoBehaviour:
   speed: 50
   rotateSpeed: 30
   damagePopup: {fileID: 8901173374172700534, guid: c8e99a744f64eff4abcaff0e2c58b965, type: 3}
+  punchParticle: {fileID: 7918396269731929166, guid: 1e17faaf5fa49ee4cba1ab150dbba13a, type: 3}
   playerInput: {fileID: 0}
   headRenderer: {fileID: 7783166517753397172}
   headRigidbody: {fileID: 5502720177236738438}
