@@ -1,13 +1,17 @@
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class PlayersManager : MonoBehaviour
+public class PlayersManager : NetworkBehaviour
 {
     public static PlayersManager Instance;
 
-    [HideInInspector] public PlayerInputManager InputManager;
     public List<PlayerObject> Players = new();
+
+    public delegate void OnPlayerJoinedEvent(PlayerObject player);
+    public event OnPlayerJoinedEvent OnPlayerJoined;
+
+    public delegate void OnPlayerLeftEvent(PlayerObject player);
+    public event OnPlayerLeftEvent OnPlayerLeft;
 
     private void Awake()
     {
@@ -20,34 +24,18 @@ public class PlayersManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        InputManager = GetComponent<PlayerInputManager>();
-        InputManager.onPlayerJoined += OnPlayerJoined;
-        InputManager.onPlayerLeft += OnPlayerLeft;
     }
 
-    private void OnPlayerJoined(PlayerInput player)
+    public void AddPlayer(PlayerObject player)
     {
-        var playerObject = player.GetComponent<PlayerObject>();
-        if (playerObject != null)
-        {
-            playerObject.PlayerIndex = player.playerIndex;
-            Players.Add(playerObject);
-        }
+        Players.Add(player);
+        player.SetIndexRpc(NetworkManager.Singleton.ConnectedClients.Count - 1);
+        OnPlayerJoined?.Invoke(player);
     }
 
-    private void OnPlayerLeft(PlayerInput player)
-    {
-        var playerObject = player.GetComponent<PlayerObject>();
-        if (playerObject != null)
-        {
-            Players.Remove(playerObject);
-        }
-    }
-
-    private void OnDestroy()
-    {
-        InputManager.onPlayerJoined -= OnPlayerJoined;
-        InputManager.onPlayerLeft -= OnPlayerLeft;
+    public void RemovePlayer(PlayerObject player)
+    {  
+        Players.Remove(player);
+        OnPlayerLeft?.Invoke(player);
     }
 }

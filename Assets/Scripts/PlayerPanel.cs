@@ -41,9 +41,6 @@ public class PlayerPanel : MonoBehaviour
         PlayerObj.OnUISubmit += OnSubmit;
         PlayerObj.OnUICancel += OnCancel;
 
-        PlayersManager.Instance.InputManager.onPlayerJoined += OnPlayerJoined;
-        PlayersManager.Instance.InputManager.onPlayerLeft += OnPlayerLeft;
-
         UpdateRemoveButton();
 
         currentHeadIndex = PlayerObj.HeadIndex;
@@ -205,8 +202,5 @@ public class PlayerPanel : MonoBehaviour
         PlayerObj.OnUINavigate -= OnNavigate;
         PlayerObj.OnUISubmit -= OnSubmit;
         PlayerObj.OnUICancel -= OnCancel;
-
-        PlayersManager.Instance.InputManager.onPlayerJoined -= OnPlayerJoined;
-        PlayersManager.Instance.InputManager.onPlayerLeft -= OnPlayerLeft;
     }
 }

@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
+using Unity.Netcode;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     public static GameManager instance;
 
@@ -32,14 +33,26 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        foreach (var player in PlayersManager.Instance.Players)
+        if (NetworkManager.IsHost)
+        {
+            foreach (var player in PlayersManager.Instance.Players)
+            {
+                SpawnPlayer(player);
+            }
+        }
+        PlayersManager.Instance.OnPlayerJoined += SpawnPlayer;
+    }
+
+    private void SpawnPlayer(PlayerObject player)
+    {
+        if (NetworkManager.IsHost)
         {
             var spawnPoint = spawnPoints[player.PlayerIndex];
 
             var playerComponent = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
             playerComponent.Init(player, healthBars[player.PlayerIndex]);
 
-            player.PlayerInput.SwitchCurrentActionMap(GameControlMap);
+            playerComponent.GetComponent<NetworkObject>().Spawn();
 
             players.Add(playerComponent);
         }

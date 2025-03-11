@@ -1,8 +1,8 @@
-using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerObject : MonoBehaviour
+public class PlayerObject : NetworkBehaviour
 {
     public Player PlayerPrefab;
     [HideInInspector] public int PlayerIndex;
@@ -28,15 +28,25 @@ public class PlayerObject : MonoBehaviour
     public delegate void OnPlayerRotateEvent(float inputValue);
     public event OnPlayerRotateEvent OnPlayerRotate;
 
+    private Sprite[] heads;
+    private Color[] colors;
     private void Awake()
     {
         DontDestroyOnLoad(this);
-
+        heads = Resources.LoadAll<Sprite>("Heads");
+        colors = Resources.Load<ColorList>("ColorList").Colors;
         PlayerInput = GetComponent<PlayerInput>();
-        PlayerIndex = PlayerInput.playerIndex;
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void SetIndexRpc(int index)
+    {
+        PlayerIndex = index;
         Name = GetNameFromIndex(PlayerIndex);
         ColorIndex = PlayerIndex;
         HeadIndex = PlayerIndex;
+        HeadSprite = heads[HeadIndex];
+        Color = colors[ColorIndex];
     }
 
     private string GetNameFromIndex(int playerIndex)
@@ -81,11 +91,35 @@ public class PlayerObject : MonoBehaviour
 
     private void OnMove(InputValue value)
     {
-        OnPlayerMove?.Invoke(value.Get<Vector2>());
+        MoveRpc(value.Get<Vector2>());
+    }
+    [Rpc(SendTo.Server)]
+    private void MoveRpc(Vector2 value)
+    {
+        OnPlayerMove?.Invoke(value);
     }
 
     private void OnRotate(InputValue value)
     {
-        OnPlayerRotate?.Invoke(value.Get<float>());
+        RotateRpc(value.Get<float>());
+    }
+    [Rpc(SendTo.Server)]
+    private void RotateRpc(float value)
+    {
+        OnPlayerRotate?.Invoke(value);
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        PlayerInput.enabled = IsOwner;
+        PlayersManager.Instance.AddPlayer(this);
+        base.OnNetworkSpawn();
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        PlayerInput.enabled = false;
+        PlayersManager.Instance.RemovePlayer(this);
+        base.OnNetworkDespawn();
     }
 }

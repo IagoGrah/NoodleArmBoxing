@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -15,31 +16,30 @@ public class LobbyManager : MonoBehaviour
 
     private void Awake()
     {
-        PlayersManager.Instance.InputManager.EnableJoining();
         foreach (var player in PlayersManager.Instance.Players)
         {
-            OnPlayerJoined(player.PlayerInput);
+            OnPlayerJoined(player);
         }
 
         UpdatePlayerCountUI();
 
-        PlayersManager.Instance.InputManager.onPlayerJoined += OnPlayerJoined;
-        PlayersManager.Instance.InputManager.onPlayerLeft += OnPlayerLeft;
+        PlayersManager.Instance.OnPlayerJoined += OnPlayerJoined;
+        PlayersManager.Instance.OnPlayerLeft += OnPlayerLeft;
     }
 
-    public void OnPlayerJoined(PlayerInput player)
+    public void OnPlayerJoined(PlayerObject player)
     {
-        var playerObject = player.GetComponent<PlayerObject>();
-        player.SwitchCurrentActionMap(UIControlMap);
+        var playerInput = player.GetComponent<PlayerInput>();
+        playerInput.SwitchCurrentActionMap(UIControlMap);
 
         var playerPanel = Instantiate(PanelPrefab, PlayerSlots);
-        playerPanel.transform.SetSiblingIndex(player.playerIndex);
-        playerPanel.PlayerObj = playerObject;
+        playerPanel.transform.SetSiblingIndex(playerInput.playerIndex);
+        playerPanel.PlayerObj = player;
 
         UpdatePlayerCountUI();
     }
 
-    private void OnPlayerLeft(PlayerInput player)
+    private void OnPlayerLeft(PlayerObject player)
     {
         UpdatePlayerCountUI();
     }
@@ -57,10 +57,9 @@ public class LobbyManager : MonoBehaviour
 
     public void StartGame()
     {
-        PlayersManager.Instance.InputManager.onPlayerJoined -= OnPlayerJoined;
-        PlayersManager.Instance.InputManager.onPlayerLeft -= OnPlayerLeft;
+        PlayersManager.Instance.OnPlayerJoined -= OnPlayerJoined;
+        PlayersManager.Instance.OnPlayerLeft -= OnPlayerLeft;
 
-        PlayersManager.Instance.InputManager.DisableJoining();
         AudioManager.Instance.PlayFightBGM();
         SceneManager.LoadScene(GameScene);
     }

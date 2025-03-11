@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 using Cinemachine;
+using Unity.Netcode;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     public PlayerObject PlayerObject;
 
@@ -59,8 +60,11 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        Move();
-        Rotate();
+        if (NetworkManager.IsHost)
+        {
+            Move();
+            Rotate();
+        }
     }
 
     void Move()
@@ -114,10 +118,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
         PlayerObject.OnPlayerMove -= OnMove;
         PlayerObject.OnPlayerRotate -= OnRotate;
+        base.OnDestroy();
     }
 
     #region Input
